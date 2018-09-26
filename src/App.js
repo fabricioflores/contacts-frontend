@@ -13,6 +13,7 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state = {
+      disableButton: false,
       contacts: [],
       modalIsOpen: false,
       isCreate: false,
@@ -38,8 +39,7 @@ class App extends Component {
   }
 
   modalDismiss = () => {
-    console.log('dismiss')
-    this.setState({modalIsOpen: false, isCreate: false, contact: {
+    this.setState({modalIsOpen: false, disableButton: false, isCreate: false, contact: {
       name:'',
       phone:'',
       email: '',
@@ -63,6 +63,7 @@ class App extends Component {
 
   onSubmit = async (event) => {
     event.preventDefault();
+    this.setState({disableButton: true});
     var formData = new FormData();
     var imagefile = document.querySelector('#image');
     formData.append('name', this.state.contact.name);
@@ -75,6 +76,7 @@ class App extends Component {
     }})
     .then(({data}) => {
       this.setState({ 
+        disableButton: false,
         contacts: this.state.contacts.concat([data])});
       this.modalDismiss();
     });
@@ -124,7 +126,7 @@ class App extends Component {
                   <Label for="image">Image</Label>
                   <Input type="file" name="image" id="image" onChange={this.onChange} value={this.state.contact.image}/>
                 </FormGroup>
-                <Button outline type="submit" color="primary">Guardar</Button>
+                <Button disabled={this.state.disableButton} outline type="submit" color="primary">Guardar</Button>
               </Form>
           ) : (
             <Row>
