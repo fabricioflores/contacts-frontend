@@ -15,6 +15,7 @@ class App extends Component {
     this.state = {
       contacts: [],
       modalIsOpen: false,
+      isCreate: false,
       contact: {
         name:'',
         phone:'',
@@ -33,11 +34,12 @@ class App extends Component {
   }
 
   addContact = () => {
-    this.setState({modalIsOpen: true});
+    this.setState({modalIsOpen: true, isCreate: true});
   }
 
   modalDismiss = () => {
-    this.setState({modalIsOpen: false, contact: {
+    console.log('dismiss')
+    this.setState({modalIsOpen: false, isCreate: false, contact: {
       name:'',
       phone:'',
       email: '',
@@ -55,6 +57,10 @@ class App extends Component {
     });
   }
 
+  showContact = (contact) => {
+    this.setState({modalIsOpen: true, isCreate: false, contact: contact});
+  }
+
   onSubmit = async (event) => {
     event.preventDefault();
     var formData = new FormData();
@@ -69,27 +75,20 @@ class App extends Component {
     }})
     .then(({data}) => {
       this.setState({ 
-        contacts: this.state.contacts.concat([data]),
-        contact: {
-          name:'',
-          phone:'',
-          email: '',
-          image: ''
-        }
-      });
+        contacts: this.state.contacts.concat([data])});
       this.modalDismiss();
     });
   }
   
   render() {
     return (
-      <Container>
+      <Container className="container">
         <Row>
           <Button outline onClick={this.addContact} color="primary">Add contact</Button>
         </Row>
         {(this.state.contacts || []).map((contact, i) => (
-              <Col xs="12" key={i}>
-              <Card>
+              <Col className="clickeable" xs="12" key={i}>
+              <Card onClick={() => this.showContact(contact)}>
                 <div>
                   <Row>
                   <Col md="2">
@@ -106,6 +105,8 @@ class App extends Component {
               </Col>
             ))}
         <Modal isOpen={this.state.modalIsOpen} dismiss={this.modalDismiss}>
+        <div className="container">
+          {this.state.isCreate ? (
           <Form onChange={this.onChange} onSubmit={this.onSubmit}>
                 <FormGroup>
                   <Label for="name">Name</Label>
@@ -125,9 +126,20 @@ class App extends Component {
                 </FormGroup>
                 <Button outline type="submit" color="primary">Guardar</Button>
               </Form>
+          ) : (
+            <Row>
+              <Col xs="4">
+                <img className='image' alt='' src={this.state.contact.image || this.imagePlaceholder}></img>
+              </Col>
+              <Col xs="8">
+                <div>{this.state.contact.name}</div>
+                <div><small>{this.state.contact.phone}</small></div>
+                <div><small>{this.state.contact.email}</small></div>
+              </Col>
+            </Row>
+          )}
+          </div>
           </Modal>
-
-
       </Container>
     );
   }
