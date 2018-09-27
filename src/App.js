@@ -9,7 +9,8 @@ import { Card, Modal } from 'coupon-components';
 
 
 class App extends Component {
-
+  // @constructor create
+  // Initialize state
   constructor(props){
     super(props);
     this.state = {
@@ -27,6 +28,8 @@ class App extends Component {
     this.imagePlaceholder = 'https://i2.wp.com/drogaspoliticacultura.net/wp-content/uploads/2017/09/placeholder-user.jpg?w=550';
   }
 
+  // @function componentDidMount
+  // load data once the component is mounted
   componentDidMount() {
     axios.get('contacts')
       .then(({data}) => {
@@ -34,10 +37,14 @@ class App extends Component {
       });
   }
 
+  // @function addContact
+  // listen the click on button. Launches de modal. Update the state
   addContact = () => {
     this.setState({modalIsOpen: true, isCreate: true});
   }
 
+  // @function modalDismiss
+  // callback from the modal. Update the state to default values.
   modalDismiss = () => {
     this.setState({modalIsOpen: false, disableButton: false, isCreate: false, contact: {
       name:'',
@@ -47,6 +54,8 @@ class App extends Component {
     }});
   }
 
+  // @function onChange
+  // listen the changes in the form. Update the state.
   onChange = (event) => {
     let value = event.target.value;
     this.setState({
@@ -57,10 +66,14 @@ class App extends Component {
     });
   }
 
+  // @function showContact
+  // listen then click on contact card. Launches de modal. Update the state
   showContact = (contact) => {
     this.setState({modalIsOpen: true, isCreate: false, contact: contact});
   }
 
+  // @function onSubmit
+  // execute when the form is submited. Do the POST call and update the state then. 
   onSubmit = async (event) => {
     event.preventDefault();
     this.setState({disableButton: true});
